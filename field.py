@@ -116,10 +116,13 @@ def start_game(width: int, height: int, mine_count: int):
     _preview_pos = None
 
 
+n_matrix = product([-1, 0, 1], repeat=2)
+
+
 def iter_neighbors(x: int, y: int) -> Iterable[tuple[int, int]]:
     return (
         (x + dx, y + dy)
-        for (dx, dy) in product([-1, 0, 1], repeat=2)
+        for (dx, dy) in n_matrix
         if (dx, dy) != (0, 0)
         if 0 <= x <= _width and 0 <= y <= _height
     )

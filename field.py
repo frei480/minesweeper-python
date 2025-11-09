@@ -17,18 +17,18 @@ class Cell:
     state: int  # 0 - hidden, 1 - revealed, 2 - flagged, 3 - false flagged
 
 
-_field: list[list[Cell]] = None
+_field: list[list[Cell]] | None = None
 _width: int = 9
 _height: int = 9
 _mine_count: int = 0
 _flags_count: int = 0
 _revealed_count: int = 0
-_start_time: float = None
+_start_time: float | None = None
 _victory: bool = False
 _game_over: bool = False
-_game_finish_time: int = None
+_game_finish_time: int | None = None
 
-_preview_pos: tuple[int, int] = None
+_preview_pos: tuple[int, int] | None = None
 
 
 def get_field_width() -> int:

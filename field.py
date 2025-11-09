@@ -1,6 +1,7 @@
-import random
 import dataclasses
+import random
 import time
+from itertools import product
 from typing import Iterable
 
 MAX_MINES_PCT = 0.5
@@ -10,7 +11,9 @@ MAX_FIELD_SIZE = 64
 
 @dataclasses.dataclass
 class Cell:
-    content: int  # 0 - no mines around, 8 - 8 mines around, -1 - mine, -2 - exploded mine
+    content: (
+        int  # 0 - no mines around, 8 - 8 mines around, -1 - mine, -2 - exploded mine
+    )
     state: int  # 0 - hidden, 1 - revealed, 2 - flagged, 3 - false flagged
 
 
@@ -61,14 +64,31 @@ def game_over() -> bool:
 
 
 def start_game(width: int, height: int, mine_count: int):
-    global _width, _height, _field, _mine_count, _flags_count, _revealed_count, _start_time, _victory, _game_over, _game_finish_time, _preview_pos
+    global \
+        _width, \
+        _height, \
+        _field, \
+        _mine_count, \
+        _flags_count, \
+        _revealed_count, \
+        _start_time, \
+        _victory, \
+        _game_over, \
+        _game_finish_time, \
+        _preview_pos
 
     if width < MIN_FIELD_SIZE or height < MIN_FIELD_SIZE:
-        raise ValueError(f'Requested field size is too small.\nMinimum dimension is {MIN_FIELD_SIZE}')
+        raise ValueError(
+            f"Requested field size is too small.\nMinimum dimension is {MIN_FIELD_SIZE}"
+        )
     if width > MAX_FIELD_SIZE or height > MAX_FIELD_SIZE:
-        raise ValueError(f'Requested field size is too big.\nMaximum dimension is {MAX_FIELD_SIZE}')
+        raise ValueError(
+            f"Requested field size is too big.\nMaximum dimension is {MAX_FIELD_SIZE}"
+        )
     if mine_count > width * height * MAX_MINES_PCT:
-        raise ValueError(f'Requested mine count is too large.\n Mine count cannot exceed cell count times {MAX_MINES_PCT}')
+        raise ValueError(
+            f"Requested mine count is too large.\n Mine count cannot exceed cell count times {MAX_MINES_PCT}"
+        )
 
     _width = width
     _height = height
@@ -97,24 +117,12 @@ def start_game(width: int, height: int, mine_count: int):
 
 
 def iter_neighbors(x: int, y: int) -> Iterable[tuple[int, int]]:
-    if y > 0:
-        yield x, y - 1
-    if y < _height - 1:
-        yield x, y + 1
-
-    if x > 0:
-        yield x - 1, y
-        if y > 0:
-            yield x - 1, y - 1
-        if y < _height - 1:
-            yield x - 1, y + 1
-
-    if x < _width - 1:
-        yield x + 1, y
-        if y > 0:
-            yield x + 1, y - 1
-        if y < _height - 1:
-            yield x + 1, y + 1
+    return (
+        (x + dx, y + dy)
+        for (dx, dy) in product([-1, 0, 1], repeat=2)
+        if (dx, dy) != (0, 0)
+        if 0 <= x <= _width and 0 <= y <= _height
+    )
 
 
 def _count_neighbor_mines(x: int, y: int) -> int:
@@ -287,8 +295,15 @@ def in_preview(x: int, y: int):
 
     if _field[_preview_pos[0]][_preview_pos[1]].state == 0:  # hidden
         return (x, y) == _preview_pos
-    elif _field[_preview_pos[0]][_preview_pos[1]].state == 1 and _field[_preview_pos[0]][_preview_pos[1]].content > 0:  # number
-        return abs(x - _preview_pos[0]) < 2 and abs(y - _preview_pos[1]) < 2 and _field[x][y].state == 0
+    elif (
+        _field[_preview_pos[0]][_preview_pos[1]].state == 1
+        and _field[_preview_pos[0]][_preview_pos[1]].content > 0
+    ):  # number
+        return (
+            abs(x - _preview_pos[0]) < 2
+            and abs(y - _preview_pos[1]) < 2
+            and _field[x][y].state == 0
+        )
     return False
 
 

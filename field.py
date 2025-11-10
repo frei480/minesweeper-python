@@ -64,18 +64,7 @@ def game_over() -> bool:
 
 
 def start_game(width: int, height: int, mine_count: int):
-    global \
-        _width, \
-        _height, \
-        _field, \
-        _mine_count, \
-        _flags_count, \
-        _revealed_count, \
-        _start_time, \
-        _victory, \
-        _game_over, \
-        _game_finish_time, \
-        _preview_pos
+    global _width, _height, _field, _mine_count, _flags_count, _revealed_count, _start_time, _victory, _game_over, _game_finish_time, _preview_pos
 
     if width < MIN_FIELD_SIZE or height < MIN_FIELD_SIZE:
         raise ValueError(
@@ -298,15 +287,8 @@ def in_preview(x: int, y: int):
 
     if _field[_preview_pos[0]][_preview_pos[1]].state == 0:  # hidden
         return (x, y) == _preview_pos
-    elif (
-        _field[_preview_pos[0]][_preview_pos[1]].state == 1
-        and _field[_preview_pos[0]][_preview_pos[1]].content > 0
-    ):  # number
-        return (
-            abs(x - _preview_pos[0]) < 2
-            and abs(y - _preview_pos[1]) < 2
-            and _field[x][y].state == 0
-        )
+    elif _field[_preview_pos[0]][_preview_pos[1]].state == 1 and _field[_preview_pos[0]][_preview_pos[1]].content > 0:  # number
+        return abs(x - _preview_pos[0]) < 2 and abs(y - _preview_pos[1]) < 2 and _field[x][y].state == 0
     return False
 
 
